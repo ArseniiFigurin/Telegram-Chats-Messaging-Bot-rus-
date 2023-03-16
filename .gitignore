@@ -1,129 +1,96 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+from telethon.sync import TelegramClient, errors
+from time import sleep
+from telethon.errors.rpcerrorlist import MessageTooLongError, PeerIdInvalidError
+import dbm
+import python_socks
+import socks
 
-# C extensions
-*.so
+def dbm_base():
+    file = dbm.open('api11.dbm', 'c')
+    try:
+        file['api_id11']
+    except:
+        file['api_id11'] = input('Enter api_id:')
+        file['api_hash11'] = input('Enter api_hash:')
+    file.close()
+    return dbm.open('api11.dbm', 'r')
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+with open(r'/Users/polzovatel/Downloads/TG_SPAM/proxy.txt', encoding='utf-8') as f:
+    proxys = f.readlines()
+    
+file = dbm_base()
+api_id = int(file['api_id11'].decode())
+api_hash = file['api_hash11'].decode()
+client = TelegramClient('client11', api_id, api_hash, proxy = {
+    'proxy_type': 'http',
+    'addr': f'{proxys[0].split(":")[0]}',
+    'port': int(proxys[0].split(":")[1]),
+    'username': f'{proxys[0].split(":")[2]}',
+    'password': f'{proxys[0].split(":")[3]}'
+})
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+delay = int(input('Znachenie taimera:'))
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+def dialog_sort(dialog):
+    # Sortiruet dialogi po neprochitannie
+    return dialog.unread_count
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
 
-# Translations
-*.mo
-*.pot
+def spammer(client):
+    k = 0
+    j = 0
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+    def create_groups_list(groups=[]):
+        # Sozdaet spisok grupp, gde neprochitannih soobshenii menshe 1
+        for dialog in client.iter_dialogs():
+        # Nachinaet begat po dialogam klienta
+            if dialog.is_group:
+            # True, esli eto gruppa
+                if dialog.unread_count >= 1:
+                # Skolko msg ne prochitano v danniy moment. Eta peremennaia ne obnovlaetsia pri postuplenii novih soobheniy
+                    groups.append(dialog)
+        return groups
 
-# Flask stuff:
-instance/
-.webassets-cache
+    with client:
+        for m in client.iter_messages('me', 1):
+            # History of my chat
+            msg = m
+        while True:
+            groups = create_groups_list()
+            groups.sort(key=dialog_sort, reverse=True)
+            for g in groups[:10000]:
+                try:
+                    client.forward_messages(g, msg, 'me')
+                    # Otpravliaet msg v gruppu g i otpravil iya
+                    k = k + 1
+                except errors.ForbiddenError as o:
+                    # Obrabotka togo, chto nelza napisat
+                    client.delete_dialog(g)
+                    if g.entity.username != None:
+                        print(f'Error: {o.message} Account pokinul @{g.entity.username}')
+                    else:
+                        print(f'Error: {o.message} Account pokinul {g.name}')
+                except errors.FloodError as e:
+                    if e.seconds > 180:
+                        continue
+                    else:
+                        print(f'Error: {e.message} Trebuetsia ozhidanie {e.seconds} secund')
+                        sleep(e.seconds)
+                except PeerIdInvalidError:
+                    # Na obrabotku bota
+                    client.delete_dialog(g)
+                except MessageTooLongError:
+                    print(f'Message was too long ==> {g.name}')
+                except errors.BadRequestError as i:
+                    print(f'Error: {i.message}')
+                except errors.RPCError as a:
+                    print(f'Error: {a.message}')
+            j = k + j
+            k = 0
+            print('Otpavleno soobhenii: ', j)
+            sleep(delay)
+            groups.clear()
 
-# Scrapy stuff:
-.scrapy
 
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+if __name__ == '__main__':
+    spammer(client)

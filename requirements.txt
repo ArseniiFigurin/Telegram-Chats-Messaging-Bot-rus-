@@ -5,4 +5,16 @@ dnspython
 heroku3
 python
 telethon
-
+telethon.sync
+TelegramClient
+sleep
+telethon.errors.rpcerrorlist
+MessageTooLongError
+PeerIdInvalidError
+dbm
+python_socks
+socks
+async_timeout
+python_socks
+pysocks
+socks

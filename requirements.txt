@@ -1,12 +1,8 @@
-upgrade pip
-pip
-/opt/render/project/src/.venv/bin/python -m pip install --upgrade pip
-pyrogram==1.4.16
+python==3.11.2
 TgCrypto
 umongo
 dnspython
 heroku3
-python==3.11.2
 telethon
 telethon.sync
 TelegramClient

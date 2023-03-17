@@ -3,3 +3,6 @@ TgCrypto
 umongo
 dnspython
 heroku3
+python
+telethon
+

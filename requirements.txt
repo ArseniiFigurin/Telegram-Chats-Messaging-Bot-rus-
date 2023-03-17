@@ -1,9 +1,10 @@
+pip
 pyrogram==1.4.16
 TgCrypto
 umongo
 dnspython
 heroku3
-python
+python==3.11.2
 telethon
 telethon.sync
 TelegramClient

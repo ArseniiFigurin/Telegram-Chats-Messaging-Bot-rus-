@@ -5,7 +5,6 @@ umongo
 dnspython
 heroku3
 telethon
-sleep
 telethon.errors.rpcerrorlist
 MessageTooLongError
 PeerIdInvalidError

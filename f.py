@@ -15,7 +15,7 @@ def dbm_base():
     file.close()
     return dbm.open('api11.dbm', 'r')
 
-with open(r'/Users/polzovatel/Downloads/TG_SPAM/proxy.txt', encoding='utf-8') as f:
+with open(r'/github.com/ArseniiFigurin/Telegram-Chats-Messaging-Bot-rus-/blob/8b31dc63227a249de5124f083954a411a19477a7/proxy.txt', encoding='utf-8') as f:
     proxys = f.readlines()
     
 file = dbm_base()

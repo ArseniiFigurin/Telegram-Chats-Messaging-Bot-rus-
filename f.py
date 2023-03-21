@@ -29,7 +29,7 @@ client = TelegramClient('client11', api_id, api_hash, proxy = {
     'password': f'{proxys[0].split(":")[3]}'
 })
 
-delay = int(input('Znachenie taimera:'))
+delay = int(input('Znachenie_taimera:'))
 
 def dialog_sort(dialog):
     # Sortiruet dialogi po neprochitannie
